@@ -1,4 +1,6 @@
 # Binaries
+/bitnode
+/bitnode-linux-*
 /xboard-node
 /xboard-node-linux-*
 *.exe

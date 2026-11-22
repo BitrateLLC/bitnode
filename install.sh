@@ -8,7 +8,7 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-APP_NAME="xboard-node"
+APP_NAME="BitNode"
 INSTALL_ROOT="/etc/xboard-node"
 BACKUP_DIR="${INSTALL_ROOT}/backups"
 INSTALL_META="${INSTALL_ROOT}/install-meta.json"
@@ -27,7 +27,7 @@ DEFAULT_ACTION="install"
 DEFAULT_RELEASE_VERSION="latest"
 DEFAULT_LOG_LEVEL="info"
 DEFAULT_KERNEL_LOG_LEVEL="warn"
-DEFAULT_DOWNLOAD_BASE="https://github.com/cedar2025/xboard-node/releases"
+DEFAULT_DOWNLOAD_BASE="https://github.com/BitrateLLC/bitnode/releases"
 
 ACTION="${DEFAULT_ACTION}"
 MODE=""
@@ -160,7 +160,7 @@ trap cleanup_tmp EXIT
 usage() {
     cat <<'HELP'
 
-  xboard-node Installer
+  BitNode Installer
 
   ACTIONS:
     install      Install or reconcile the configured deployment (default)
@@ -483,7 +483,7 @@ stage_binary() {
         log_step "Using local binary: ${local_src}"
         cp "$local_src" "$staged"
     else
-        resolve_download_url "xboard-node-linux-${ARCH}"
+        resolve_download_url "bitnode-linux-${ARCH}"
         log_step "Downloading binary: ${DOWNLOAD_URL}"
         if ! curl -fsSL "$DOWNLOAD_URL" -o "$staged"; then
             log_error "Failed to download binary from ${DOWNLOAD_URL}"
@@ -577,8 +577,8 @@ render_config() {
 render_service() {
     cat >"$TMP_DIR/${SERVICE_NAME}" <<EOF_UNIT
 [Unit]
-Description=Xboard Node Backend
-Documentation=https://github.com/cedar2025/xboard-node
+Description=BitNode Backend
+Documentation=https://github.com/BitrateLLC/bitnode
 After=network-online.target
 Wants=network-online.target
 
@@ -775,7 +775,7 @@ perform_uninstall() {
 perform_status() {
     detect_current_state
     echo
-    echo -e "${BOLD}xboard-node install status${NC}"
+    echo -e "${BOLD}BitNode install status${NC}"
     echo "  state:   ${CURRENT_STATE}"
     if [ -f "$INSTALL_META" ]; then
         echo "  meta:    ${INSTALL_META}"

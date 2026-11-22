@@ -17,7 +17,7 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/cedar2025/xboard-node/internal/config"
+	"github.com/BitrateLLC/bitnode/internal/config"
 	"gopkg.in/yaml.v3"
 )
 
@@ -30,7 +30,7 @@ const (
 	serviceName            = "xboard-node.service"
 	serviceFilePath        = "/etc/systemd/system/xboard-node.service"
 	defaultInstallRoot     = "/etc/xboard-node"
-	downloadBase           = "https://github.com/cedar2025/xboard-node/releases"
+	downloadBase           = "https://github.com/BitrateLLC/bitnode/releases"
 )
 
 var (
@@ -225,7 +225,7 @@ shortcuts:
 }
 
 func runStatus() error {
-	fmt.Println("xboard-node status")
+	fmt.Println("BitNode status")
 	fmt.Println()
 
 	// Version from install-meta.json
@@ -403,10 +403,10 @@ func runUpgrade(args []string) error {
 
 	binaryDir := filepath.Dir(defaultBinaryPath)
 	cliDir := filepath.Dir(defaultCLIPath)
-	newBinary := filepath.Join(binaryDir, ".xboard-node.new")
+	newBinary := filepath.Join(binaryDir, ".bitnode.new")
 	newCLI := filepath.Join(cliDir, ".xbctl.new")
 
-	binaryURL := resolveDownloadURL(fmt.Sprintf("xboard-node-linux-%s", arch), version)
+	binaryURL := resolveDownloadURL(fmt.Sprintf("bitnode-linux-%s", arch), version)
 	cliURL := resolveDownloadURL(fmt.Sprintf("xbctl-linux-%s", arch), version)
 
 	fmt.Printf("Downloading %s...\n", binaryURL)
@@ -1156,8 +1156,8 @@ func latestInstanceID(instances []*config.Config) string {
 
 func regenerateServiceFile() error {
 	unit := fmt.Sprintf(`[Unit]
-Description=Xboard Node Backend
-Documentation=https://github.com/cedar2025/xboard-node
+Description=BitNode Backend
+Documentation=https://github.com/BitrateLLC/bitnode
 After=network-online.target
 Wants=network-online.target
 

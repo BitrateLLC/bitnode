@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cedar2025/xboard-node/internal/config"
+	"github.com/BitrateLLC/bitnode/internal/config"
 )
 
 func ValidateNodeSpec(n *NodeSpec, kcfg config.KernelConfig) error {
@@ -40,11 +40,12 @@ func ValidateNodeSpec(n *NodeSpec, kcfg config.KernelConfig) error {
 	return nil
 }
 
-
 func normalizeKernelType(value string) (string, error) {
 	switch strings.ToLower(strings.TrimSpace(value)) {
 	case "singbox", "sing-box":
 		return "singbox", nil
+	case "xray":
+		return "xray", nil
 
 	default:
 		return "", fmt.Errorf("unsupported kernel type %q", value)

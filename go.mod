@@ -1,4 +1,4 @@
-module github.com/cedar2025/xboard-node
+module github.com/BitrateLLC/bitnode
 
 go 1.26
 
@@ -34,6 +34,19 @@ require (
 	golang.org/x/term v0.45.0
 	golang.org/x/time v0.15.0
 	gopkg.in/yaml.v3 v3.0.1
+)
+
+require (
+	github.com/apernet/quic-go v0.59.1-0.20260217092621-db4786c77a22 // indirect
+	github.com/cloudflare/circl v1.6.3 // indirect
+	github.com/ghodss/yaml v1.0.1-0.20220118164431-d8423dcdf344 // indirect
+	github.com/juju/ratelimit v1.0.2 // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
+	github.com/refraction-networking/utls v1.8.3-0.20260301010127-aa6edf4b11af // indirect
+	github.com/vishvananda/netlink v1.3.1 // indirect
+	github.com/xtls/reality v0.0.0-20260322125925-9234c772ba8f // indirect
+	golang.zx2c4.com/wireguard v0.0.0-20250521234502-f333402bd9cb // indirect
+	gvisor.dev/gvisor v0.0.0-20260122175437-89a5d21be8f0 // indirect
 )
 
 require (
@@ -218,7 +231,7 @@ require (
 	github.com/sagernet/sing-shadowsocks2 v0.2.2-0.20260929152114-a69d1086332b // indirect
 	github.com/sagernet/sing-shadowtls v0.2.2-0.20260928201441-a9c0127d5c99 // indirect
 	github.com/sagernet/sing-snell v0.0.0-20260904135315-bc5a12ac736f // indirect
-	github.com/sagernet/sing-tun v0.9.7-0.20261023115432-040db71fcd33 // indirect
+	github.com/sagernet/sing-tun v0.9.7-0.20261023115432-040db71fcd33
 	github.com/sagernet/sing-usbip v0.0.0-20260817040617-28bd42667eca // indirect
 	github.com/sagernet/sing-vmess v0.2.9-0.20261019223527-a0c58542bd9d // indirect
 	github.com/sagernet/smux v1.5.50-sing-box-mod.1 // indirect
@@ -243,6 +256,7 @@ require (
 	github.com/vishvananda/netns v0.0.5 // indirect
 	github.com/vultr/govultr/v3 v3.20.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
+	github.com/xtls/xray-core v1.260327.0
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	github.com/zeebo/blake3 v0.2.4 // indirect
@@ -277,3 +291,5 @@ require (
 	lukechampine.com/blake3 v1.4.1 // indirect
 	zombiezen.com/go/capnproto2 v2.18.2+incompatible // indirect
 )
+
+replace github.com/xtls/xray-core => github.com/cedar2025/Xray-core v0.0.0-20260409213332-f47935539965

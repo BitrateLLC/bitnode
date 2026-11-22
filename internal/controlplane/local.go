@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/cedar2025/xboard-node/internal/config"
-	"github.com/cedar2025/xboard-node/internal/model"
+	"github.com/BitrateLLC/bitnode/internal/config"
+	"github.com/BitrateLLC/bitnode/internal/model"
 )
 
 type LocalControlPlane struct {

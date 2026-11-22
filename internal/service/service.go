@@ -14,17 +14,18 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/cedar2025/xboard-node/internal/cert"
-	"github.com/cedar2025/xboard-node/internal/cert/dnsproviders"
-	"github.com/cedar2025/xboard-node/internal/config"
-	"github.com/cedar2025/xboard-node/internal/controlplane"
-	"github.com/cedar2025/xboard-node/internal/kernel"
-	"github.com/cedar2025/xboard-node/internal/kernel/singbox"
-	"github.com/cedar2025/xboard-node/internal/limiter"
-	"github.com/cedar2025/xboard-node/internal/model"
-	"github.com/cedar2025/xboard-node/internal/monitor"
-	"github.com/cedar2025/xboard-node/internal/nlog"
-	"github.com/cedar2025/xboard-node/internal/tracker"
+	"github.com/BitrateLLC/bitnode/internal/cert"
+	"github.com/BitrateLLC/bitnode/internal/cert/dnsproviders"
+	"github.com/BitrateLLC/bitnode/internal/config"
+	"github.com/BitrateLLC/bitnode/internal/controlplane"
+	"github.com/BitrateLLC/bitnode/internal/kernel"
+	"github.com/BitrateLLC/bitnode/internal/kernel/singbox"
+	"github.com/BitrateLLC/bitnode/internal/kernel/xray"
+	"github.com/BitrateLLC/bitnode/internal/limiter"
+	"github.com/BitrateLLC/bitnode/internal/model"
+	"github.com/BitrateLLC/bitnode/internal/monitor"
+	"github.com/BitrateLLC/bitnode/internal/nlog"
+	"github.com/BitrateLLC/bitnode/internal/tracker"
 )
 
 type Service struct {
@@ -138,7 +139,13 @@ func NewWithControlPlane(cfg *config.Config, cp controlplane.ControlPlane) *Serv
 func newService(cfg *config.Config, cp controlplane.ControlPlane) *Service {
 	certMgr := cert.NewManager(cfg.Cert)
 
-	k := singbox.New(cfg.Kernel)
+	var k kernel.Kernel
+	switch strings.ToLower(strings.TrimSpace(cfg.Kernel.Type)) {
+	case "xray":
+		k = xray.New(cfg.Kernel)
+	default:
+		k = singbox.New(cfg.Kernel)
+	}
 
 	l := limiter.New()
 	st := limiter.NewSpeedTracker(l)

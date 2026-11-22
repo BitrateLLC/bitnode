@@ -14,10 +14,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/cedar2025/xboard-node/internal/config"
-	"github.com/cedar2025/xboard-node/internal/machine"
-	"github.com/cedar2025/xboard-node/internal/nlog"
-	"github.com/cedar2025/xboard-node/internal/service"
+	"github.com/BitrateLLC/bitnode/internal/config"
+	"github.com/BitrateLLC/bitnode/internal/machine"
+	"github.com/BitrateLLC/bitnode/internal/nlog"
+	"github.com/BitrateLLC/bitnode/internal/service"
 )
 
 var (
@@ -31,7 +31,7 @@ func main() {
 	flag.Parse()
 
 	if *showVersion {
-		fmt.Printf("xboard-node %s (built %s)\n", version, buildTime)
+		fmt.Printf("BitNode %s (built %s)\n", version, buildTime)
 		os.Exit(0)
 	}
 

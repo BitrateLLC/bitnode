@@ -1,4 +1,4 @@
-# Xboard Node Configuration
+# BitNode Configuration
 # Top-level settings are inherited by all instances. Instance overrides take precedence.
 
 # ── Single node (simplest) ──
@@ -9,7 +9,7 @@
 
 # ── Multiple instances ──
 # kernel:
-#   type: "singbox"
+#   type: "singbox" # or "xray"
 # log:
 #   level: "info"
 # instances:

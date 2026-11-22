@@ -13,20 +13,20 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cedar2025/xboard-node/internal/nlog"
+	"github.com/BitrateLLC/bitnode/internal/nlog"
 	"golang.org/x/term"
 	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
-	InstanceID string `yaml:"-"`
-	Panel   PanelConfig   `yaml:"panel"`
-	Node    NodeConfig    `yaml:"node"`
-	Kernel  KernelConfig  `yaml:"kernel"`
-	Cert    CertConfig    `yaml:"cert"`
-	Log     LogConfig     `yaml:"log"`
-	Runtime RuntimeConfig `yaml:"runtime"`
-	WS      WSConfig      `yaml:"ws"`
+	InstanceID string        `yaml:"-"`
+	Panel      PanelConfig   `yaml:"panel"`
+	Node       NodeConfig    `yaml:"node"`
+	Kernel     KernelConfig  `yaml:"kernel"`
+	Cert       CertConfig    `yaml:"cert"`
+	Log        LogConfig     `yaml:"log"`
+	Runtime    RuntimeConfig `yaml:"runtime"`
+	WS         WSConfig      `yaml:"ws"`
 	// Standalone enables a local-only node that never contacts the panel.
 	Standalone *StandaloneConfig `yaml:"standalone,omitempty"`
 	// HealthPort enables a lightweight HTTP health-check endpoint on the
@@ -118,7 +118,7 @@ type WSConfig struct {
 }
 
 type KernelConfig struct {
-	Type      string `yaml:"type"` // "singbox"
+	Type      string `yaml:"type"` // "singbox" or "xray"
 	ConfigDir string `yaml:"config_dir"`
 	LogLevel  string `yaml:"log_level"`
 
@@ -353,7 +353,7 @@ func (rc *RootConfig) NormalizeInstances() ([]*Config, error) {
 
 // Load reads configuration from a YAML file, then applies environment variable
 // overrides. If the config file does not exist, a config is built entirely from
-// environment variables (useful for Docker deployment with -e flags).
+// environment variables, which is useful for service managers and automation.
 func Load(path string) (*Config, error) {
 	cfg := &Config{}
 
@@ -719,8 +719,10 @@ func (c *Config) validate() error {
 			}
 		}
 	}
-	if c.Kernel.Type != "singbox" {
-		return fmt.Errorf("kernel.type must be 'singbox', got '%s'", c.Kernel.Type)
+	switch strings.ToLower(strings.TrimSpace(c.Kernel.Type)) {
+	case "singbox", "xray":
+	default:
+		return fmt.Errorf("kernel.type must be 'singbox' or 'xray', got '%s'", c.Kernel.Type)
 	}
 	if c.Cert.AutoTLS && c.Cert.Domain == "" {
 		return fmt.Errorf("cert.domain is required when cert.auto_tls is enabled")

@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cedar2025/xboard-node/internal/config"
-	"github.com/cedar2025/xboard-node/internal/kernel"
-	"github.com/cedar2025/xboard-node/internal/model"
-	"github.com/cedar2025/xboard-node/internal/nlog"
+	"github.com/BitrateLLC/bitnode/internal/config"
+	"github.com/BitrateLLC/bitnode/internal/kernel"
+	"github.com/BitrateLLC/bitnode/internal/model"
+	"github.com/BitrateLLC/bitnode/internal/nlog"
 	"github.com/go-viper/mapstructure/v2"
 )
 

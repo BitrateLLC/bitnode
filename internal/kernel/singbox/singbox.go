@@ -15,10 +15,10 @@ import (
 	"github.com/sagernet/sing/service"
 	"golang.org/x/time/rate"
 
-	"github.com/cedar2025/xboard-node/internal/config"
-	"github.com/cedar2025/xboard-node/internal/kernel"
-	"github.com/cedar2025/xboard-node/internal/model"
-	"github.com/cedar2025/xboard-node/internal/nlog"
+	"github.com/BitrateLLC/bitnode/internal/config"
+	"github.com/BitrateLLC/bitnode/internal/kernel"
+	"github.com/BitrateLLC/bitnode/internal/model"
+	"github.com/BitrateLLC/bitnode/internal/nlog"
 )
 
 // drainTimeout is the maximum time stop() gives active connections to finish

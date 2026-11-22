@@ -9,13 +9,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cedar2025/xboard-node/internal/config"
-	"github.com/cedar2025/xboard-node/internal/controlplane"
+	"github.com/BitrateLLC/bitnode/internal/config"
+	"github.com/BitrateLLC/bitnode/internal/controlplane"
 
-	"github.com/cedar2025/xboard-node/internal/monitor"
-	"github.com/cedar2025/xboard-node/internal/nlog"
-	"github.com/cedar2025/xboard-node/internal/panel"
-	"github.com/cedar2025/xboard-node/internal/service"
+	"github.com/BitrateLLC/bitnode/internal/monitor"
+	"github.com/BitrateLLC/bitnode/internal/nlog"
+	"github.com/BitrateLLC/bitnode/internal/panel"
+	"github.com/BitrateLLC/bitnode/internal/service"
 )
 
 // nodeHandle tracks a running node service.
