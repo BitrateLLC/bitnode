@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"bytes"
@@ -22,14 +22,13 @@ import (
 )
 
 const (
-	defaultConfigPath      = "/etc/xboard-node/config.yml"
-	defaultMetaPath        = "/etc/xboard-node/install-meta.json"
-	defaultCredentialsPath = "/etc/xboard-node/credentials.env"
-	defaultBinaryPath      = "/usr/local/bin/xboard-node"
-	defaultCLIPath         = "/usr/local/bin/xbctl"
-	serviceName            = "xboard-node.service"
-	serviceFilePath        = "/etc/systemd/system/xboard-node.service"
-	defaultInstallRoot     = "/etc/xboard-node"
+	defaultConfigPath      = "/etc/bitnode/config.yml"
+	defaultMetaPath        = "/etc/bitnode/install-meta.json"
+	defaultCredentialsPath = "/etc/bitnode/credentials.env"
+	defaultBinaryPath      = "/usr/local/bin/bitnode"
+	serviceName            = "bitnode.service"
+	serviceFilePath        = "/etc/systemd/system/bitnode.service"
+	defaultInstallRoot     = "/etc/bitnode"
 	downloadBase           = "https://github.com/BitrateLLC/bitnode/releases"
 )
 
@@ -141,11 +140,10 @@ func loadInstallMeta(path string) (*installMeta, error) {
 	return meta, nil
 }
 
-func main() {
-	if err := run(os.Args[1:]); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+func Run(args []string, appVersion, appBuildTime string) error {
+	version = appVersion
+	buildTime = appBuildTime
+	return run(args)
 }
 
 func run(args []string) error {
@@ -183,7 +181,7 @@ func run(args []string) error {
 	case "uninstall":
 		return runUninstall(args[1:])
 	case "version", "-v", "--version":
-		fmt.Printf("xbctl %s (built %s)\n", version, buildTime)
+		fmt.Printf("bitctl %s (built %s)\n", version, buildTime)
 		return nil
 	case "config":
 		return runConfig(args[1:])
@@ -196,32 +194,32 @@ func run(args []string) error {
 }
 
 func printUsage() {
-	fmt.Println(`xbctl commands:
-  xbctl help
-  xbctl status
-  xbctl list [--output text|json]
-  xbctl instance list [--output text|json]
-  xbctl instance get <id> [--output text|json]
-  xbctl config init --mode node|machine --panel-url URL --token TOKEN [flags]
-  xbctl config health-port [--config PATH]
-  xbctl service status|start|stop|restart|enable|disable|logs
-  xbctl health
-  xbctl bind add-node --panel-url URL --token TOKEN --node-id ID [--node-type TYPE]
-  xbctl bind add-machine --panel-url URL --token TOKEN --machine-id ID
-  xbctl bind remove <instance-id>
-  xbctl bind remove-node --panel URL --node-id ID
-  xbctl bind remove-machine --panel URL --machine-id ID
-  xbctl upgrade [--version VERSION]
-  xbctl uninstall [--purge] [--yes]
-  xbctl version
+	fmt.Println(`bitctl commands:
+  bitctl help
+  bitctl status
+  bitctl list [--output text|json]
+  bitctl instance list [--output text|json]
+  bitctl instance get <id> [--output text|json]
+  bitctl config init --mode node|machine --panel-url URL --token TOKEN [flags]
+  bitctl config health-port [--config PATH]
+  bitctl service status|start|stop|restart|enable|disable|logs
+  bitctl health
+  bitctl bind add-node --panel-url URL --token TOKEN --node-id ID [--node-type TYPE]
+  bitctl bind add-machine --panel-url URL --token TOKEN --machine-id ID
+  bitctl bind remove <instance-id>
+  bitctl bind remove-node --panel URL --node-id ID
+  bitctl bind remove-machine --panel URL --machine-id ID
+  bitctl upgrade [--version VERSION]
+  bitctl uninstall [--purge] [--yes]
+  bitctl version
 
 shortcuts:
-  xbctl start|stop|restart        = xbctl service start|stop|restart
-  xbctl log|logs                  = xbctl service logs
-  xbctl bind-node ...             = xbctl bind add-node ...
-  xbctl bind-machine ...          = xbctl bind add-machine ...
-  xbctl unbind-node ...           = xbctl bind remove-node ...
-  xbctl unbind-machine ...        = xbctl bind remove-machine ...`)
+  bitctl start|stop|restart        = bitctl service start|stop|restart
+  bitctl log|logs                  = bitctl service logs
+  bitctl bind-node ...             = bitctl bind add-node ...
+  bitctl bind-machine ...          = bitctl bind add-machine ...
+  bitctl unbind-node ...           = bitctl bind remove-node ...
+  bitctl unbind-machine ...        = bitctl bind remove-machine ...`)
 }
 
 func runStatus() error {
@@ -273,7 +271,7 @@ func runInstance(args []string) error {
 		return fmt.Errorf("unknown instance command: %s", args[0])
 	}
 	if len(args) < 2 {
-		return errors.New("usage: xbctl instance get <id> [--output text|json]")
+		return errors.New("usage: bitctl instance get <id> [--output text|json]")
 	}
 	id := args[1]
 	output := parseOutput(args[2:])
@@ -291,7 +289,7 @@ func runInstance(args []string) error {
 
 func runService(args []string) error {
 	if len(args) == 0 {
-		return errors.New("usage: xbctl service <status|start|stop|restart|enable|disable|logs>")
+		return errors.New("usage: bitctl service <status|start|stop|restart|enable|disable|logs>")
 	}
 	sub := args[0]
 	rest := args[1:]
@@ -321,7 +319,7 @@ func runHealth() error {
 
 func runBind(args []string) error {
 	if len(args) == 0 {
-		return errors.New("usage: xbctl bind <add-node|add-machine|remove-node|remove-machine> ...")
+		return errors.New("usage: bitctl bind <add-node|add-machine|remove-node|remove-machine> ...")
 	}
 	if err := ensureRoot("bind"); err != nil {
 		return err
@@ -347,7 +345,7 @@ func runBind(args []string) error {
 		return removeBinding(panel, 0, machineID, "")
 	case "remove":
 		if len(rest) == 0 {
-			return errors.New("usage: xbctl bind remove <instance-id>")
+			return errors.New("usage: bitctl bind remove <instance-id>")
 		}
 		return removeBinding("", 0, 0, rest[0])
 	default:
@@ -386,10 +384,10 @@ func runUpgrade(args []string) error {
 		return err
 	}
 
-	version := "latest"
+	release := "latest"
 	for i := 0; i < len(args); i++ {
 		if args[i] == "--version" && i+1 < len(args) {
-			version = args[i+1]
+			release = args[i+1]
 			i++
 		}
 	}
@@ -400,105 +398,48 @@ func runUpgrade(args []string) error {
 	}
 
 	fmt.Println("Starting upgrade...")
-
 	binaryDir := filepath.Dir(defaultBinaryPath)
-	cliDir := filepath.Dir(defaultCLIPath)
 	newBinary := filepath.Join(binaryDir, ".bitnode.new")
-	newCLI := filepath.Join(cliDir, ".xbctl.new")
-
-	binaryURL := resolveDownloadURL(fmt.Sprintf("bitnode-linux-%s", arch), version)
-	cliURL := resolveDownloadURL(fmt.Sprintf("xbctl-linux-%s", arch), version)
-
+	binaryURL := resolveDownloadURL(fmt.Sprintf("bitnode-linux-%s", arch), release)
 	fmt.Printf("Downloading %s...\n", binaryURL)
 	if err := downloadFile(binaryURL, newBinary); err != nil {
-		return fmt.Errorf("download binary: %w", err)
+		return fmt.Errorf("download BitNode: %w", err)
 	}
-
-	fmt.Printf("Downloading %s...\n", cliURL)
-	if err := downloadFile(cliURL, newCLI); err != nil {
-		os.Remove(newBinary)
-		return fmt.Errorf("download xbctl: %w", err)
-	}
-
 	if err := os.Chmod(newBinary, 0o755); err != nil {
-		return cleanupFiles(newBinary, newCLI, fmt.Errorf("chmod binary: %w", err))
+		return cleanupFiles(fmt.Errorf("chmod BitNode: %w", err), newBinary)
 	}
-	if err := os.Chmod(newCLI, 0o755); err != nil {
-		return cleanupFiles(newBinary, newCLI, fmt.Errorf("chmod xbctl: %w", err))
-	}
-
-	// Validate downloaded binaries
 	if out, err := exec.Command(newBinary, "-v").CombinedOutput(); err != nil {
-		return cleanupFiles(newBinary, newCLI, fmt.Errorf("binary version check failed: %s", string(out)))
-	}
-	if out, err := exec.Command(newCLI, "version").CombinedOutput(); err != nil {
-		return cleanupFiles(newBinary, newCLI, fmt.Errorf("xbctl version check failed: %s", string(out)))
+		return cleanupFiles(fmt.Errorf("BitNode version check failed: %s", string(out)), newBinary)
 	}
 
-	// Backup existing binaries
 	backupBinary := defaultBinaryPath + ".bak"
-	backupCLI := defaultCLIPath + ".bak"
-	// Backup existing binaries
 	if fileExists(defaultBinaryPath) {
 		if err := copyFile(defaultBinaryPath, backupBinary); err != nil {
-			return cleanupFiles(newBinary, newCLI, fmt.Errorf("backup binary: %w", err))
+			return cleanupFiles(fmt.Errorf("backup BitNode: %w", err), newBinary)
 		}
 	}
-	if fileExists(defaultCLIPath) {
-		if err := copyFile(defaultCLIPath, backupCLI); err != nil {
-			return cleanupFiles(newBinary, newCLI, fmt.Errorf("backup xbctl: %w", err))
-		}
-	}
-
-	// Atomic rename
 	if err := os.Rename(newBinary, defaultBinaryPath); err != nil {
-		return cleanupFiles(newBinary, newCLI, fmt.Errorf("replace binary: %w", err))
+		return cleanupFiles(fmt.Errorf("replace BitNode: %w", err), newBinary)
 	}
-	if err := os.Rename(newCLI, defaultCLIPath); err != nil {
-		if fileExists(backupBinary) {
-			os.Rename(backupBinary, defaultBinaryPath)
-		}
-		os.Remove(newCLI)
-		return fmt.Errorf("replace xbctl: %w", err)
-	}
+	ensureCommandLinks()
 
-	// Recreate /usr/bin/xbctl symlink
-	os.Remove("/usr/bin/xbctl")
-	os.Symlink(defaultCLIPath, "/usr/bin/xbctl")
-
-	// Restart service
 	fmt.Println("Restarting service...")
 	runCommand("systemctl", "daemon-reload")
 	if err := runCommand("systemctl", "restart", serviceName); err != nil {
 		fmt.Println("Restart failed, rolling back...")
-		rollbackOK := true
 		if fileExists(backupBinary) {
-			if e := os.Rename(backupBinary, defaultBinaryPath); e != nil {
-				fmt.Printf("Warning: rollback binary failed: %v\n", e)
-				rollbackOK = false
-			}
-		}
-		if fileExists(backupCLI) {
-			if e := os.Rename(backupCLI, defaultCLIPath); e != nil {
-				fmt.Printf("Warning: rollback xbctl failed: %v\n", e)
-				rollbackOK = false
+			if rollbackErr := os.Rename(backupBinary, defaultBinaryPath); rollbackErr != nil {
+				return fmt.Errorf("upgrade restart failed (%v) and rollback failed: %w", err, rollbackErr)
 			}
 		}
 		runCommand("systemctl", "daemon-reload")
-		if e := runCommand("systemctl", "restart", serviceName); e != nil {
-			return fmt.Errorf("upgrade and rollback restart both failed: %w", e)
+		if restartErr := runCommand("systemctl", "restart", serviceName); restartErr != nil {
+			return fmt.Errorf("upgrade and rollback restart both failed: %w", restartErr)
 		}
-		if rollbackOK {
-			return errors.New("upgrade failed: service restart failed, rolled back successfully")
-		}
-		return errors.New("upgrade failed: partial rollback, check binary state manually")
+		return errors.New("upgrade failed: service restart failed, rolled back successfully")
 	}
 
-	// Clean up backups
 	os.Remove(backupBinary)
-	os.Remove(backupCLI)
-
-	// Update install-meta.json
 	newVer := "unknown"
 	if out, err := exec.Command(defaultBinaryPath, "-v").CombinedOutput(); err == nil {
 		newVer = strings.TrimSpace(string(out))
@@ -510,6 +451,13 @@ func runUpgrade(args []string) error {
 
 	fmt.Printf("Upgrade complete (version: %s)\n", newVer)
 	return nil
+}
+
+func ensureCommandLinks() {
+	for _, path := range []string{"/usr/local/bin/bitctl", "/usr/bin/bitctl"} {
+		os.Remove(path)
+		_ = os.Symlink(defaultBinaryPath, path)
+	}
 }
 
 func runUninstall(args []string) error {
@@ -556,7 +504,7 @@ func runUninstall(args []string) error {
 
 	// Remove binaries
 	// Remove binaries and symlinks
-	for _, p := range []string{defaultBinaryPath, defaultCLIPath, "/usr/bin/xbctl"} {
+	for _, p := range []string{defaultBinaryPath, "/usr/local/bin/bitctl", "/usr/bin/bitctl"} {
 		if err := os.Remove(p); err != nil && !os.IsNotExist(err) {
 			warnings = append(warnings, fmt.Sprintf("remove %s: %v", p, err))
 		}
@@ -618,9 +566,10 @@ func downloadFile(url, dest string) error {
 	return err
 }
 
-func cleanupFiles(a, b string, err error) error {
-	os.Remove(a)
-	os.Remove(b)
+func cleanupFiles(err error, paths ...string) error {
+	for _, path := range paths {
+		os.Remove(path)
+	}
 	return err
 }
 
@@ -683,7 +632,7 @@ func parseRemoveNodeArgs(args []string) (string, int, error) {
 		}
 	}
 	if strings.TrimSpace(panel) == "" || nodeID <= 0 {
-		return "", 0, errors.New("usage: xbctl bind remove-node --panel URL --node-id ID")
+		return "", 0, errors.New("usage: bitctl bind remove-node --panel URL --node-id ID")
 	}
 	return strings.TrimSpace(panel), nodeID, nil
 }
@@ -714,7 +663,7 @@ func parseRemoveMachineArgs(args []string) (string, int, error) {
 		}
 	}
 	if strings.TrimSpace(panel) == "" || machineID <= 0 {
-		return "", 0, errors.New("usage: xbctl bind remove-machine --panel URL --machine-id ID")
+		return "", 0, errors.New("usage: bitctl bind remove-machine --panel URL --machine-id ID")
 	}
 	return strings.TrimSpace(panel), machineID, nil
 }
@@ -785,7 +734,7 @@ func removeBinding(panelURL string, nodeID int, machineID int, instanceID string
 		runCommand("systemctl", "stop", serviceName)
 		fmt.Printf("removed %d binding(s)\n", len(removed))
 		fmt.Println("All bindings removed. Service stopped.")
-		fmt.Println("Use 'xbctl bind add-node/add-machine' to add a new binding, or 'xbctl uninstall' to fully uninstall.")
+		fmt.Println("Use 'bitctl bind add-node/add-machine' to add a new binding, or 'bitctl uninstall' to fully uninstall.")
 		return nil
 	}
 
@@ -1191,7 +1140,7 @@ func machineIDPtr(cfg *config.Config) *int {
 
 func runConfig(args []string) error {
 	if len(args) == 0 {
-		return errors.New("usage: xbctl config <init|health-port>")
+		return errors.New("usage: bitctl config <init|health-port>")
 	}
 	switch args[0] {
 	case "init":
@@ -1346,7 +1295,7 @@ func runConfigInit(args []string) error {
 	inst.InstanceID = instanceID
 
 	if installRoot == "" {
-		installRoot = "/etc/xboard-node"
+		installRoot = "/etc/bitnode"
 	}
 	inst.Kernel.ConfigDir = filepath.Join(installRoot, "instances", instanceID)
 

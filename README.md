@@ -20,24 +20,26 @@ BitNode runs directly on the host under systemd; Docker and Docker Compose are n
 
 ```bash
 # Node mode
-curl -fsSL https://raw.githubusercontent.com/BitrateLLC/bitnode/dev/install.sh | \
+curl -fsSL https://raw.githubusercontent.com/BitrateLLC/bitnode/main/install.sh | \
   sudo bash -s -- --mode node --panel https://panel.example.com --token TOKEN --node-id 1
 
 # Machine mode
-curl -fsSL https://raw.githubusercontent.com/BitrateLLC/bitnode/dev/install.sh | \
+curl -fsSL https://raw.githubusercontent.com/BitrateLLC/bitnode/main/install.sh | \
   sudo bash -s -- --mode machine --panel https://panel.example.com --token TOKEN --machine-id 1
 
-## xbctl
+## bitctl
 
-Run `xbctl` after installation for help. Common commands:
+The CLI is embedded in the BitNode binary; the installer creates a `bitctl` symlink to it. You can also run `bitnode ctl` directly.
+
+Run `bitctl` after installation for help. Common commands:
 
 ```bash
-xbctl list                          # list all instances
-xbctl status                        # running status
-xbctl bind add-node --panel URL --token TOKEN --node-id 1
-xbctl bind add-machine --panel URL --token TOKEN --machine-id 1
-xbctl bind remove-node --panel URL --node-id 1
-xbctl service restart
+bitctl list                          # list all instances
+bitctl status                        # running status
+bitctl bind add-node --panel URL --token TOKEN --node-id 1
+bitctl bind add-machine --panel URL --token TOKEN --machine-id 1
+bitctl bind remove-node --panel URL --node-id 1
+bitctl service restart
 ```
 
 ## Configuration

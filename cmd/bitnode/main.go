@@ -8,12 +8,14 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"runtime/debug"
 	"strings"
 	"sync"
 	"syscall"
 	"time"
 
+	"github.com/BitrateLLC/bitnode/internal/cli"
 	"github.com/BitrateLLC/bitnode/internal/config"
 	"github.com/BitrateLLC/bitnode/internal/machine"
 	"github.com/BitrateLLC/bitnode/internal/nlog"
@@ -25,7 +27,25 @@ var (
 	buildTime = "unknown"
 )
 
+func runCLI(args []string) {
+	if err := cli.Run(args, version, buildTime); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
 func main() {
+	args := os.Args[1:]
+	invokedAs := filepath.Base(os.Args[0])
+	if invokedAs == "bitctl" {
+		runCLI(args)
+		return
+	}
+	if len(args) > 0 && args[0] == "ctl" {
+		runCLI(args[1:])
+		return
+	}
+
 	configPath := flag.String("c", "config.yml", "config file path")
 	showVersion := flag.Bool("v", false, "show version")
 	flag.Parse()

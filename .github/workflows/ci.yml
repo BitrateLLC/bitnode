@@ -46,15 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bitnode-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: |
-            bitnode-${{ matrix.goos }}-${{ matrix.goarch }}
-            xboard-node-${{ matrix.goos }}-${{ matrix.goarch }}
-
-      - name: Upload xbctl artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: xbctl-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: xbctl-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: bitnode-${{ matrix.goos }}-${{ matrix.goarch }}
 
 
   release:
@@ -79,7 +71,3 @@ jobs:
           files: |
             dist/bitnode-linux-amd64
             dist/bitnode-linux-arm64
-            dist/xboard-node-linux-amd64
-            dist/xboard-node-linux-arm64
-            dist/xbctl-linux-amd64
-            dist/xbctl-linux-arm64

@@ -6,20 +6,18 @@ LDFLAGS := -s -w -X main.version=$(VERSION) -X main.buildTime=$(BUILD_TIME) -X m
 
 # Build for current platform
 build:
-	go build -ldflags "$(LDFLAGS)" -tags "with_quic with_utls with_wireguard with_clash_api" -o bitnode ./cmd/xboard-node
-	go build -ldflags "$(LDFLAGS)" -o xbctl ./cmd/xbctl
+	go build -ldflags "$(LDFLAGS)" -tags "with_quic with_utls with_wireguard with_clash_api" -o bitnode ./cmd/bitnode
+	ln -sfn bitnode bitctl
 
 # Build for Linux amd64
 build-linux:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -tags "with_quic with_utls with_wireguard with_acme with_clash_api" -o bitnode-linux-amd64 ./cmd/xboard-node
-	cp bitnode-linux-amd64 xboard-node-linux-amd64
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o xbctl-linux-amd64 ./cmd/xbctl
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -tags "with_quic with_utls with_wireguard with_acme with_clash_api" -o bitnode-linux-amd64 ./cmd/bitnode
+
 
 # Build for Linux arm64
 build-linux-arm64:
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags "$(LDFLAGS)" -tags "with_quic with_utls with_wireguard with_acme with_clash_api" -o bitnode-linux-arm64 ./cmd/xboard-node
-	cp bitnode-linux-arm64 xboard-node-linux-arm64
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags "$(LDFLAGS)" -o xbctl-linux-arm64 ./cmd/xbctl
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags "$(LDFLAGS)" -tags "with_quic with_utls with_wireguard with_acme with_clash_api" -o bitnode-linux-arm64 ./cmd/bitnode
+
 
 # Build all platforms
 build-all: build-linux build-linux-arm64
@@ -27,16 +25,15 @@ build-all: build-linux build-linux-arm64
 
 # Clean build artifacts
 clean:
-	rm -f bitnode bitnode-linux-* xboard-node-linux-* xboard-node xbctl xbctl-linux-*
+	rm -f bitnode bitnode-linux-* bitctl
 
 
-# Install to system (single node, legacy compat)
+# Install to system
 install: build
-	sudo install -m 755 bitnode /usr/local/bin/xboard-node
-	sudo ln -sfn /usr/local/bin/xboard-node /usr/local/bin/bitnode
-	sudo install -m 755 xbctl /usr/local/bin/
-	sudo mkdir -p /etc/xboard-node
-	@if [ ! -f /etc/xboard-node/config.yml ]; then \
-		sudo cp config.yml.example /etc/xboard-node/config.yml; \
-		echo "Config copied to /etc/xboard-node/config.yml - please edit it"; \
+	sudo install -m 755 bitnode /usr/local/bin/bitnode
+	sudo ln -sfn /usr/local/bin/bitnode /usr/local/bin/bitctl
+	sudo mkdir -p /etc/bitnode
+	@if [ ! -f /etc/bitnode/config.yml ]; then \
+		sudo cp config.yml.example /etc/bitnode/config.yml; \
+		echo "Config copied to /etc/bitnode/config.yml - please edit it"; \
 	fi
