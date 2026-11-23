@@ -475,11 +475,17 @@ func buildSnell(base M, nc *model.NodeSpec, users []model.UserSpec) M {
 	base["version"] = version
 	base["psk"] = nc.PSK
 
-	userList := make([]M, 0, len(users))
-	for _, u := range users {
-		userList = append(userList, M{"name": u.UUID, "userkey": u.UUID})
+	// Snell v4/v5 没有按用户鉴权的概念：主流客户端（Clash/Surge）请求里的
+	// ClientID 恒为空。sing-box 只要 users 非空就会切到 MultiService，而
+	// MultiService 对空 ClientID 直接返回 ErrBadUserKey，导致 v5 节点从
+	// Clash 根本连不上。只有 v6 通过 userkey 支持多用户。
+	if version == 6 {
+		userList := make([]M, 0, len(users))
+		for _, u := range users {
+			userList = append(userList, M{"name": u.UUID, "userkey": u.UUID})
+		}
+		base["users"] = userList
 	}
-	base["users"] = userList
 
 	if version == 5 {
 		if nc.ObfsMode != "" {
